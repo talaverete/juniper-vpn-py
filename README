@@ -47,6 +47,16 @@ juniper-vpn.py [-h HOST] [-u USERNAME] [-o OATH] [-c CONFIG] [-s STDIN] \
 	%DSID% will be replaced with the DSID cookie value. The string %HOST%
 	will be replaced with the server hostname.
 
+-k --privatekey
+	Private key file for client certificate authentication. The key must
+	be unencrypted. Both --privatekey and --cert need to be provided for
+	client certificate authentication to work.
+
+-t --cert
+	Personal certificate file for client certificate authentication. Both
+	--privatekey and --cert need to be provided for client certificate
+	authentication to work.
+
 <external program> <external program arguments...>
 	Runs the external program with the supplied arguments when a cookie
 	is generated. %DSID% in any argument is replaced with the DSID cookie

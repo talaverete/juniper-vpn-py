@@ -172,6 +172,8 @@ class juniper_vpn(object):
         # Untested, a list of availables realms is provided when this
         # is necessary.
         # self.br.form['realm'] = [realm]
+        if self.args.cert is not None:
+            self.br.add_client_certificate(self.args.host, self.args.privatekey, self.args.cert)
         self.r = self.br.submit()
 
     def action_key(self):
@@ -231,6 +233,10 @@ if __name__ == "__main__":
                         help='VPN host name')
     parser.add_argument('-u', '--username', type=str,
                         help='User name')
+    parser.add_argument('-k', '--privatekey', type=str,
+                        help='Unencrypted client private key file')
+    parser.add_argument('-t', '--cert', type=str,
+                        help='Client certificate file')
     parser.add_argument('-o', '--oath', type=str,
                         help='OATH key for two factor authentication (hex)')
     parser.add_argument('-c', '--config', type=str,
@@ -253,7 +259,7 @@ if __name__ == "__main__":
     if args.config is not None:
         config = ConfigParser.RawConfigParser()
         config.read(args.config)
-        for arg in ['username', 'host', 'password', 'oath', 'action', 'stdin']:
+        for arg in ['username', 'host', 'password', 'oath', 'action', 'stdin', 'privatekey', 'cert']:
             if args.__dict__[arg] is None:
                 try:
                     args.__dict__[arg] = config.get('vpn', arg)
@@ -266,6 +272,11 @@ if __name__ == "__main__":
     if args.username == None or args.host == None or args.action == []:
         print "--user, --host, and <action> are required parameters"
         sys.exit(1)
+
+    if args.privatekey is not None or args.cert is not None:
+        if args.privatekey is None or args.cert is None:
+            print "Both --privatekey and --cert are required for personal certificate authentication"
+            sys.exit(1)
 
     atexit.register(cleanup)
     jvpn = juniper_vpn(args)
